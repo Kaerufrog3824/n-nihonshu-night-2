@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIKKEI Nihonshu Night - おすすめ診断</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- カラーパレット定義 --- */
+        :root {
+            --nikkei-logo-bg: #0C2B5E; /* ロゴ背景色 */
+            --nikkei-accent: #C4A480;  /* アクセント（ベージュ/金） */
+            --nikkei-highlight: #1a4f9c; /* 強調用青 */
+            --bg-color: #f4f4f7;
+            --text-color: #333;
+        }
+
+        /* --- ベーススタイル --- */
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- ヘッダーエリア --- */
+        header {
+            background-color: var(--nikkei-logo-bg);
+            color: white;
+            padding: 30px 20px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ロゴ画像のスタイル */
+        .logo-img {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 10px;
+            background-color: var(--nikkei-logo-bg);
+            display: block;
+        }
+
+        h1 {
+            margin: 10px 0 0 0;
+            font-size: 1.5em;
+            font-weight: 700;
+            font-family: 'Noto Serif JP', serif;
+            letter-spacing: 0.05em;
+        }
+
+        .sub-title {
+            font-size: 0.9em;
+            opacity: 0.85;
+            margin-top: 5px;
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        /* --- メインコンテンツエリア --- */
+        .container {
+            padding: 25px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 質問カード */
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(12, 43, 94, 0.08);
+            margin-bottom: 25px;
+            border-top: 4px solid var(--nikkei-logo-bg);
+        }
+
+        .question-card h3 {
+            margin-top: 0;
+            color: var(--nikkei-logo-bg);
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.15em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .options label {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 14px;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+
+        .options label:hover {
+            background: #f0f4fa;
+        }
+
+        .options label.selected {
+            background: #eef4ff;
+            border-color: var(--nikkei-logo-bg);
+            color: var(--nikkei-logo-bg);
+            font-weight: bold;
+            box-shadow: 0 0 0 1px var(--nikkei-logo-bg);
+        }
+
+        .options input {
+            margin-right: 12px;
+            accent-color: var(--nikkei-logo-bg);
+            transform: scale(1.2);
+        }
+
+        /* 診断ボタン */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--nikkei-logo-bg);
+            color: white;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(12, 43, 94, 0.3);
+            font-family: 'Noto Serif JP', serif;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-primary:hover {
+            background: #1a4f9c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(12, 43, 94, 0.4);
+        }
+
+        /* 結果エリア */
+        #result-area {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #result-area h2 {
+            text-align: center;
+            color: var(--nikkei-logo-bg);
+            font-family: 'Noto Serif JP', serif;
+            margin-bottom: 25px;
+        }
+
+        .sake-card {
+            background: white;
+            border-left: 6px solid var(--nikkei-logo-bg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        /* --- 追加した画像のスタイル --- */
+        .sake-img {
+            width: 100%;       /* 横幅いっぱいに */
+            height: 200px;     /* 高さは固定 */
+            object-fit: contain; /* 画像全体が見えるように調整 */
+            background-color: #fff; 
+            border-radius: 4px;
+            margin-bottom: 12px;
+            /* 枠線は無くても良いですが、白い画像だと背景と同化するので薄く入れています */
+            border: 1px solid #f0f0f0; 
+        }
+
+        .sake-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--nikkei-logo-bg);
+            margin-bottom: 8px;
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .sake-desc {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .match-score {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.9em;
+            background: #f0f4fa;
+            color: var(--nikkei-logo-bg);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-family: 'Noto Sans JP', sans-serif;
+            z-index: 10; /* 画像の上に重なるように */
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <img src="NNN_logo.jpg" alt="NIKKEI Nihonshu Night Logo" class="logo-img">
+        <h1>おすすめ日本酒診断</h1>
+        <div class="sub-title">あなたの好みに合う一杯を探します</div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-area">
+            <div class="question-card">
+                <h3>Q1. 甘さの好みは？</h3>
+                <div class="options">
+                    <label><input type="radio" name="sweetness" value="1"> <span>キリッと辛口</span></label>
+                    <label class="selected"><input type="radio" name="sweetness" value="2" checked>
+                        <span>どちらとも言えない</span></label>
+                    <label><input type="radio" name="sweetness" value="3"> <span>フルーティーな甘口</span></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <h3>Q2. 香りの強さは？</h3>
+                <div class="options">
+                    <label><input type="radio" name="aroma" value="1"> <span>穏やかで落ち着く</span></label>
+                    <label class="selected"><input type="radio" name="aroma" value="2" checked>
+                        <span>バランス重視</span></label>
+                    <label><input type="radio" name="aroma" value="3"> <span>華やかに香る</span></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <h3>Q3. 飲み口の重さは？</h3>
+                <div class="options">
+                    <label><input type="radio" name="richness" value="1"> <span>スッキリ淡麗</span></label>
+                    <label class="selected"><input type="radio" name="richness" value="2" checked>
+                        <span>中くらい</span></label>
+                    <label><input type="radio" name="richness" value="3"> <span>ドッシリ濃醇</span></label>
+                </div>
+            </div>
+
+            <button id="btn-diagnose" class="btn-primary" onclick="diagnose()">診断する</button>
+        </div>
+
+        <div id="result-area">
+            <h2>あなたへのおすすめ</h2>
+            <div id="sake-list"></div>
+            <button onclick="location.reload()" class="btn-primary"
+                style="margin-top:30px; background-color:#777; box-shadow:none;">もう一度診断する</button>
+        </div>
+    </div>
+
+    <script>
+        // 日本酒リスト（画像ファイル名を追加済み）
+        // imageプロパティのファイル名を、実際の画像ファイル名に合わせてください
+        const sakeData = [
+            { 
+                id: 1, 
+                name: "日経大吟醸 磨き二割", 
+                desc: "フルーティーで華やかな香り。乾杯に最適。", 
+                sweetness: 3, aroma: 3, richness: 2, 
+                image: "sake_1.jpg" 
+            },
+            { 
+                id: 2, 
+                name: "純米 日経政宗", 
+                desc: "米の旨味がガツンとくる、硬派な辛口。", 
+                sweetness: 1, aroma: 1, richness: 3, 
+                image: "sake_2.jpg" 
+            },
+            { 
+                id: 3, 
+                name: "特別本醸造 NIKKEI ASIA", 
+                desc: "スッキリとして飲み飽きしない、万能タイプ。", 
+                sweetness: 1, aroma: 2, richness: 1, 
+                image: "sake_3.jpg" 
+            },
+            { 
+                id: 4, 
+                name: "純米吟醸 CPF", 
+                desc: "甘みと酸味のバランスが絶妙なモダンな味わい。", 
+                sweetness: 2, aroma: 3, richness: 2, 
+                image: "sake_4.jpg" 
+            },
+            { 
+                id: 5, 
+                name: "生酛 ニッケイネクスト", 
+                desc: "複雑な味わいとキレの良さ。お燗もおすすめ。", 
+                sweetness: 2, aroma: 1, richness: 3, 
+                image: "sake_5.jpg" 
+            }
+        ];
+
+        function diagnose() {
+            const u_sweet = parseInt(document.querySelector('input[name="sweetness"]:checked').value);
+            const u_aroma = parseInt(document.querySelector('input[name="aroma"]:checked').value);
+            const u_rich = parseInt(document.querySelector('input[name="richness"]:checked').value);
+
+            const results = sakeData.map(sake => {
+                const diff = Math.abs(sake.sweetness - u_sweet)
+                    + Math.abs(sake.aroma - u_aroma)
+                    + Math.abs(sake.richness - u_rich);
+                return { ...sake, diff: diff };
+            });
+
+            results.sort((a, b) => a.diff - b.diff);
+
+            const listDiv = document.getElementById('sake-list');
+            listDiv.innerHTML = "";
+
+            results.slice(0, 3).forEach((sake, index) => {
+                const div = document.createElement('div');
+                div.className = 'sake-card';
+                const matchRate = Math.max(0, 100 - (sake.diff * 15));
+                
+                // 画像タグ(img)を含めたHTMLを生成
+                div.innerHTML = `
+                    <div class="match-score">マッチ度: ${matchRate}%</div>
+                    <img src="${sake.image}" alt="${sake.name}" class="sake-img">
+                    <div class="sake-name">No.${index + 1} ${sake.name}</div>
+                    <div class="sake-desc">${sake.desc}</div>
+                `;
+                listDiv.appendChild(div);
+            });
+
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('result-area').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // ラジオボタン選択時のスタイル変更
+        document.querySelectorAll('.options label').forEach(label => {
+            label.addEventListener('click', function () {
+                const group = this.closest('.options');
+                group.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -14,12 +14,12 @@
     <style>
         /* --- カラーパレット定義 --- */
         :root {
-            --nikkei-logo-bg: #0C2B5E; /* ロゴ背景色 */
-            --nikkei-accent: #C4A480;  /* アクセント（ベージュ/金） */
-            --nikkei-highlight: #1a4f9c; /* 強調用青 */
+            --nikkei-logo-bg: #0C2B5E;
+            --nikkei-accent: #C4A480;
+            --nikkei-highlight: #1a4f9c;
             --bg-color: #f4f4f7;
             --text-color: #333;
-            --slack-color: #4A154B; /* Slackブランドカラー */
+            --slack-color: #4A154B;
         }
 
         /* --- ベーススタイル --- */
@@ -32,7 +32,7 @@
             padding: 0;
         }
 
-        /* --- ヘッダーエリア --- */
+        /* --- ヘッダー --- */
         header {
             background-color: var(--nikkei-logo-bg);
             color: white;
@@ -44,7 +44,6 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* ロゴ画像のスタイル */
         .logo-img {
             max-width: 220px;
             height: auto;
@@ -68,14 +67,13 @@
             font-family: 'Noto Serif JP', serif;
         }
 
-        /* --- メインコンテンツエリア --- */
+        /* --- コンテンツエリア --- */
         .container {
             padding: 25px 20px;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        /* 質問カード */
         .question-card {
             background: white;
             padding: 25px;
@@ -125,7 +123,6 @@
             transform: scale(1.2);
         }
 
-        /* 診断ボタン */
         .btn-primary {
             width: 100%;
             padding: 16px;
@@ -152,8 +149,8 @@
         .btn-slack {
             display: block;
             width: 100%;
-            margin-top: 15px;
-            padding: 12px;
+            margin-top: 30px;
+            padding: 14px;
             background-color: var(--slack-color);
             color: white;
             border: none;
@@ -161,22 +158,22 @@
             font-weight: bold;
             font-family: 'Noto Sans JP', sans-serif;
             cursor: pointer;
-            font-size: 0.95em;
+            font-size: 1em;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(74, 21, 75, 0.3);
             transition: background 0.3s, transform 0.1s;
         }
         .btn-slack:hover {
             background-color: #611f69;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
         .btn-slack:active {
             transform: translateY(1px);
         }
         .slack-icon {
-            margin-right: 6px;
+            margin-right: 8px;
             font-weight: normal;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         /* 結果エリア */
@@ -294,8 +291,11 @@
         <div id="result-area">
             <h2>あなたへのおすすめ</h2>
             <div id="sake-list"></div>
+            
+            <div id="share-section"></div>
+
             <button onclick="location.reload()" class="btn-primary"
-                style="margin-top:30px; background-color:#777; box-shadow:none;">もう一度診断する</button>
+                style="margin-top:20px; background-color:#777; box-shadow:none;">もう一度診断する</button>
         </div>
     </div>
 
@@ -356,6 +356,7 @@
 
             results.sort((a, b) => a.diff - b.diff);
 
+            // リスト表示（カード）の生成
             const listDiv = document.getElementById('sake-list');
             listDiv.innerHTML = "";
 
@@ -364,18 +365,24 @@
                 div.className = 'sake-card';
                 const matchRate = Math.max(0, 100 - (sake.diff * 15));
                 
+                // ※カード内からシェアボタンは削除しました
                 div.innerHTML = `
                     <div class="match-score">マッチ度: ${matchRate}%</div>
                     <img src="${sake.image}" alt="${sake.name}" class="sake-img">
                     <div class="sake-name">No.${index + 1} ${sake.name}</div>
                     <div class="sake-desc">${sake.desc}</div>
-                    
-                    <button onclick="shareToSlack('${sake.name}')" class="btn-slack">
-                        <span class="slack-icon">#</span>Slackで結果をシェア
-                    </button>
                 `;
                 listDiv.appendChild(div);
             });
+
+            // ▼シェアボタン▼
+            const bestSake = results[0]; // 1位のお酒を取得
+            const shareSection = document.getElementById('share-section');
+            shareSection.innerHTML = `
+                <button onclick="shareToSlack('${bestSake.name}')" class="btn-slack">
+                    <span class="slack-icon">#</span>#hobby-nihonshuで結果をシェア
+                </button>
+            `;
 
             document.getElementById('quiz-area').style.display = 'none';
             document.getElementById('result-area').style.display = 'block';
@@ -392,23 +399,19 @@
                     alert("投稿文をコピーしました！\nこのあとSlackが開くので、入力欄に貼り付けて投稿してください。");
                     openSlack();
                 }).catch(err => {
-                    // コピー失敗時
                     alert("コピーできませんでした。Slackを開きます。");
                     openSlack();
                 });
             } else {
-                // クリップボードAPI非対応ブラウザ
                 alert("ブラウザが対応していないため自動コピーできませんでした。\nSlackを開きます。");
                 openSlack();
             }
         }
 
         function openSlack() {
-            // Slackアプリを呼び出す（なければブラウザへ）
             window.location.href = `https://slack.com/app_redirect?channel=${SLACK_CHANNEL_ID}`;
         }
 
-        // ラジオボタン選択時のスタイル変更
         document.querySelectorAll('.options label').forEach(label => {
             label.addEventListener('click', function () {
                 const group = this.closest('.options');

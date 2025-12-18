@@ -19,6 +19,7 @@
             --nikkei-highlight: #1a4f9c; /* 強調用青 */
             --bg-color: #f4f4f7;
             --text-color: #333;
+            --slack-color: #4A154B; /* Slackブランドカラー */
         }
 
         /* --- ベーススタイル --- */
@@ -147,6 +148,37 @@
             box-shadow: 0 6px 15px rgba(12, 43, 94, 0.4);
         }
 
+        /* Slackシェアボタン */
+        .btn-slack {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background-color: var(--slack-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Noto Sans JP', sans-serif;
+            cursor: pointer;
+            font-size: 0.95em;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background 0.3s, transform 0.1s;
+        }
+        .btn-slack:hover {
+            background-color: #611f69;
+            transform: translateY(-1px);
+        }
+        .btn-slack:active {
+            transform: translateY(1px);
+        }
+        .slack-icon {
+            margin-right: 6px;
+            font-weight: normal;
+            opacity: 0.8;
+        }
+
         /* 結果エリア */
         #result-area {
             display: none;
@@ -176,15 +208,13 @@
             position: relative;
         }
 
-        /* --- 追加した画像のスタイル --- */
         .sake-img {
-            width: 100%;       /* 横幅いっぱいに */
-            height: 200px;     /* 高さは固定 */
-            object-fit: contain; /* 画像全体が見えるように調整 */
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
             background-color: #fff; 
             border-radius: 4px;
             margin-bottom: 12px;
-            /* 枠線は無くても良いですが、白い画像だと背景と同化するので薄く入れています */
             border: 1px solid #f0f0f0; 
         }
 
@@ -213,7 +243,7 @@
             border-radius: 20px;
             font-weight: bold;
             font-family: 'Noto Sans JP', sans-serif;
-            z-index: 10; /* 画像の上に重なるように */
+            z-index: 10;
         }
     </style>
 </head>
@@ -223,7 +253,7 @@
     <header>
         <img src="NNN_logo.jpg" alt="NIKKEI Nihonshu Night Logo" class="logo-img">
         <h1>おすすめ日本酒診断</h1>
-        <div class="sub-title">あなたの好みに合う一杯を探します</div>
+        <div class="sub-title">今夜のラインナップから、あなたに合う一杯を探します</div>
     </header>
 
     <div class="container">
@@ -270,19 +300,21 @@
     </div>
 
     <script>
-        // 日本酒リスト（画像ファイル名を追加済み）
-        // imageプロパティのファイル名を、実際の画像ファイル名に合わせてください
+        // ▼ Slack設定（指定のチャンネルID）
+        const SLACK_CHANNEL_ID = "C08PQ6NUTU1"; 
+
+        // 日本酒リスト
         const sakeData = [
             { 
                 id: 1, 
-                name: "日経大吟醸 磨き二割 甘口", 
+                name: "日経大吟醸 磨き二割", 
                 desc: "フルーティーで華やかな香り。乾杯に最適。", 
                 sweetness: 3, aroma: 3, richness: 2, 
                 image: "sake_1.jpg" 
             },
             { 
                 id: 2, 
-                name: "純米 辛口 日経政宗", 
+                name: "純米 日経政宗", 
                 desc: "米の旨味がガツンとくる、硬派な辛口。", 
                 sweetness: 1, aroma: 1, richness: 3, 
                 image: "sake_2.jpg" 
@@ -291,7 +323,7 @@
                 id: 3, 
                 name: "特別本醸造 NIKKEI ASIA", 
                 desc: "スッキリとして飲み飽きしない、万能タイプ。", 
-                sweetness: 2, aroma: 2, richness: 1, 
+                sweetness: 1, aroma: 2, richness: 1, 
                 image: "sake_3.jpg" 
             },
             { 
@@ -303,9 +335,9 @@
             },
             { 
                 id: 5, 
-                name: "生酛 辛口 ニッケイネクスト", 
+                name: "生酛 ニッケイネクスト", 
                 desc: "複雑な味わいとキレの良さ。お燗もおすすめ。", 
-                sweetness: 1, aroma: 1, richness: 3, 
+                sweetness: 2, aroma: 1, richness: 3, 
                 image: "sake_5.jpg" 
             }
         ];
@@ -332,12 +364,15 @@
                 div.className = 'sake-card';
                 const matchRate = Math.max(0, 100 - (sake.diff * 15));
                 
-                // 画像タグ(img)を含めたHTMLを生成
                 div.innerHTML = `
                     <div class="match-score">マッチ度: ${matchRate}%</div>
                     <img src="${sake.image}" alt="${sake.name}" class="sake-img">
                     <div class="sake-name">No.${index + 1} ${sake.name}</div>
                     <div class="sake-desc">${sake.desc}</div>
+                    
+                    <button onclick="shareToSlack('${sake.name}')" class="btn-slack">
+                        <span class="slack-icon">#</span>Slackで結果をシェア
+                    </button>
                 `;
                 listDiv.appendChild(div);
             });
@@ -345,6 +380,32 @@
             document.getElementById('quiz-area').style.display = 'none';
             document.getElementById('result-area').style.display = 'block';
             window.scrollTo(0, 0);
+        }
+
+        // --- Slackシェア機能 ---
+        function shareToSlack(sakeName) {
+            // 投稿用テキスト
+            const text = `私のベストマッチは『${sakeName}』でした！ #NNN2 #おすすめ日本酒診断`;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("投稿文をコピーしました！\nこのあとSlackが開くので、入力欄に貼り付けて投稿してください。");
+                    openSlack();
+                }).catch(err => {
+                    // コピー失敗時
+                    alert("コピーできませんでした。Slackを開きます。");
+                    openSlack();
+                });
+            } else {
+                // クリップボードAPI非対応ブラウザ
+                alert("ブラウザが対応していないため自動コピーできませんでした。\nSlackを開きます。");
+                openSlack();
+            }
+        }
+
+        function openSlack() {
+            // Slackアプリを呼び出す（なければブラウザへ）
+            window.location.href = `https://slack.com/app_redirect?channel=${SLACK_CHANNEL_ID}`;
         }
 
         // ラジオボタン選択時のスタイル変更

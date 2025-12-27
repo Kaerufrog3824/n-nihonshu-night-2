@@ -1,5 +1,6 @@
 /* * NIKKEI Nihonshu Night - データ管理ファイル
- * ここを変更するだけで、リストやSlack設定が更新されます。
+ * ここを変更すると、リストやSlack設定が更新されます。
+ */
 
 // ▼ Slack設定（チャンネルID）
 const SLACK_CHANNEL_ID = "C08PQ6NUTU1"; 

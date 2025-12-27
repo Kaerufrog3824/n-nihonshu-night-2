@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIKKEI Nihonshu Night - おすすめ診断</title>
+    
+    <link rel="icon" href="NNN_logo.jpg">
+    <link rel="apple-touch-icon" href="NNN_logo.jpg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -299,53 +303,16 @@
         </div>
     </div>
 
-    <script>
-        const SLACK_CHANNEL_ID = "C08PQ6NUTU1"; 
+    <script src="sake-list.js"></script>
 
-        // ▼ sakeリスト
-        const sakeData = [
-            { 
-                id: 1, 
-                name: "日経大吟醸 磨き二割", 
-                desc: "フルーティーで華やかな香り。乾杯に最適。", 
-                sweetness: 3, aroma: 3, richness: 2, 
-                image: "sake/sake_1.jpg" 
-            },
-            { 
-                id: 2, 
-                name: "純米 日経政宗", 
-                desc: "米の旨味がガツンとくる、硬派な辛口。", 
-                sweetness: 1, aroma: 1, richness: 3, 
-                image: "sake/sake_2.jpg" 
-            },
-            { 
-                id: 3, 
-                name: "特別本醸造 NIKKEI ASIA", 
-                desc: "スッキリとして飲み飽きしない、万能タイプ。", 
-                sweetness: 1, aroma: 2, richness: 1, 
-                image: "sake/sake_3.jpg" 
-            },
-            { 
-                id: 4, 
-                name: "純米吟醸 CPF", 
-                desc: "甘みと酸味のバランスが絶妙なモダンな味わい。", 
-                sweetness: 2, aroma: 3, richness: 2, 
-                image: "sake/sake_4.jpg" 
-            },
-            { 
-                id: 5, 
-                name: "生酛 ニッケイネクスト", 
-                desc: "複雑な味わいとキレの良さ。お燗もおすすめ。", 
-                sweetness: 2, aroma: 1, richness: 3, 
-                image: "sake/sake_5.jpg" 
-            }
-        ];
+    <script>
 
         function diagnose() {
             const u_sweet = parseInt(document.querySelector('input[name="sweetness"]:checked').value);
             const u_aroma = parseInt(document.querySelector('input[name="aroma"]:checked').value);
             const u_rich = parseInt(document.querySelector('input[name="richness"]:checked').value);
 
+            // sakeDataは sake-list.js から読み込まれています
             const results = sakeData.map(sake => {
                 const diff = Math.abs(sake.sweetness - u_sweet)
                     + Math.abs(sake.aroma - u_aroma)
@@ -376,7 +343,7 @@
             const shareSection = document.getElementById('share-section');
             shareSection.innerHTML = `
                 <button onclick="shareToSlack('${bestSake.name}')" class="btn-slack">
-                    <span class="slack-icon">#</span>hobby-nihonshuで結果をシェア
+                    <span class="slack-icon">#</span>#hobby-nihonshuで結果をシェア
                 </button>
             `;
 
@@ -403,6 +370,7 @@
         }
 
         function openSlack() {
+            // SLACK_CHANNEL_ID も sake-list.js から読み込まれます
             window.location.href = `https://slack.com/app_redirect?channel=${SLACK_CHANNEL_ID}`;
         }
 

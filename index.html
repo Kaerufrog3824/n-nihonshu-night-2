@@ -23,10 +23,8 @@
             --bg-color: #f4f4f7;
             --text-color: #333;
             --slack-color: #4A154B;
-
-            /* ▼ 日本酒の色 ▼ */
-            --sake-liquid: #ffca28;
-
+            /* ▼ ここを「黄金色」に戻しました！ ▼ */
+            --sake-liquid: #fadd75;
         }
 
         body {
@@ -41,12 +39,14 @@
         header {
             background-color: var(--nikkei-logo-bg);
             color: white;
-            padding: 30px 20px 20px;
+            padding: 30px 20px 25px;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 100;
         }
 
         .logo-img {
@@ -70,12 +70,41 @@
             opacity: 0.85;
             margin-top: 5px;
             font-family: 'Noto Serif JP', serif;
+            margin-bottom: 15px;
+        }
+
+        /* ヘッダー用の一覧ボタン */
+        .btn-header-link {
+            display: inline-block;
+            background-color: var(--nikkei-accent);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 101;
+            position: relative;
+        }
+
+        .btn-header-link:hover {
+            background-color: #b08d66;
+            transform: translateY(-2px);
+        }
+
+        .btn-header-link span {
+            margin-right: 5px;
         }
 
         .container {
             padding: 25px 20px;
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .question-card {
@@ -113,9 +142,9 @@
             justify-content: space-between;
             position: relative;
             margin: 10px 0;
+            z-index: 10;
         }
 
-        /* ラジオボタンは隠す */
         .rating-group input[type="radio"] {
             display: none;
         }
@@ -126,16 +155,13 @@
             height: 42px;
             background-color: white;
             border: 2px solid #ddd;
-
-            /* 上は平ら、下を強く丸めて「器」の形に */
             border-radius: 2px 2px 20px 20px;
-
             position: relative;
             cursor: pointer;
             overflow: hidden;
-            /* 液体がはみ出さないように */
             transition: transform 0.2s ease, border-color 0.2s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            touch-action: manipulation;
         }
 
         /* お猪口の中の数字 */
@@ -150,10 +176,10 @@
             font-family: 'Noto Sans JP', sans-serif;
             transition: color 0.2s;
             font-size: 1.2em;
-            /* 数字を少し大きく */
+            pointer-events: none;
         }
 
-        /* 注がれる液体（最初は高さ0） */
+        /* 注がれる液体 */
         .rating-group label::before {
             content: '';
             position: absolute;
@@ -161,38 +187,30 @@
             left: 0;
             width: 100%;
             height: 0%;
-            /* 空っぽ */
             background-color: var(--sake-liquid);
-            opacity: 0.85;
-            /* 少し透け感を出す */
+            opacity: 0.9;
             transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 1;
+            pointer-events: none;
         }
 
-        /* ホバー時の挙動 */
         .rating-group label:hover {
             border-color: var(--nikkei-accent);
             transform: translateY(-2px);
         }
 
-        /* 【選択中】の状態（液体を満たす） */
         .rating-group label.active-fill::before {
             height: 90%;
-            /* なみなみと注ぐ */
         }
 
-        /* 選択されたお猪口は枠線を濃く */
         .rating-group label.active-fill {
-            border-color: #c0ca33;
-            /* 液体の色に近い少し濃い色（ライム系） */
+            border-color: #dcb368;
+            /* 黄金色に合わせた枠線 */
         }
 
-        /* 液体が入った時の数字の色 */
         .rating-group label.active-fill span {
             color: #0C2B5E;
-            /* 濃紺にしてコントラストを確保 */
         }
-
 
         .btn-primary {
             width: 100%;
@@ -328,6 +346,10 @@
         <img src="NNN_logo.jpg" alt="NIKKEI Nihonshu Night Logo" class="logo-img">
         <h1>おすすめ日本酒診断</h1>
         <div class="sub-title">今夜のラインナップから、あなたに合う一杯を探します</div>
+
+        <a href="list.html" class="btn-header-link">
+            <span>📜</span>全ラインナップを見る
+        </a>
     </header>
 
     <div class="container">
@@ -388,17 +410,18 @@
     <script src="sake-list.js"></script>
 
     <script>
-        // ページ読み込み時に初期状態の「液体注入」を実行
         window.addEventListener('DOMContentLoaded', () => {
-            updateAllVisuals();
+            try {
+                updateAllVisuals();
+            } catch (e) {
+                console.error("Visual update failed:", e);
+            }
         });
 
-        // 選択肢をクリックしたときのイベント設定
         document.querySelectorAll('input[type=radio]').forEach(radio => {
             radio.addEventListener('change', updateAllVisuals);
         });
 
-        // お猪口に液体を注ぐ処理
         function updateAllVisuals() {
             const groups = ['group-sweet', 'group-aroma', 'group-rich'];
 
@@ -411,8 +434,6 @@
                     const labels = container.querySelectorAll('label');
 
                     labels.forEach((label, index) => {
-                        // index+1 がそのラベルの数値
-                        // 選択された数値以下のカップ全てに「なみなみと注ぐ」クラスを付与
                         if (index + 1 <= val) {
                             label.classList.add('active-fill');
                         } else {
@@ -424,6 +445,11 @@
         }
 
         function diagnose() {
+            if (typeof sakeData === 'undefined') {
+                alert("エラー：お酒のデータ(sake-list.js)が読み込めませんでした。");
+                return;
+            }
+
             const u_sweet = parseInt(document.querySelector('input[name="sweetness"]:checked').value);
             const u_aroma = parseInt(document.querySelector('input[name="aroma"]:checked').value);
             const u_rich = parseInt(document.querySelector('input[name="richness"]:checked').value);

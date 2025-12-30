@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIKKEI Nihonshu Night - おすすめ診断</title>
-    
+
     <link rel="icon" href="NNN_logo.jpg">
     <link rel="apple-touch-icon" href="NNN_logo.jpg">
 
@@ -20,13 +20,13 @@
         :root {
             --nikkei-logo-bg: #0C2B5E;
             --nikkei-accent: #C4A480;
-            --nikkei-highlight: #1a4f9c;
             --bg-color: #f4f4f7;
             --text-color: #333;
             --slack-color: #4A154B;
+            /* ▼ ここを「黄金色」に戻しました！ ▼ */
+            --sake-liquid: #fadd75;
         }
 
-        /* --- ベーススタイル --- */
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background: var(--bg-color);
@@ -36,16 +36,17 @@
             padding: 0;
         }
 
-        /* --- ヘッダー --- */
         header {
             background-color: var(--nikkei-logo-bg);
             color: white;
-            padding: 30px 20px 20px;
+            padding: 30px 20px 25px;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 100;
         }
 
         .logo-img {
@@ -69,18 +70,46 @@
             opacity: 0.85;
             margin-top: 5px;
             font-family: 'Noto Serif JP', serif;
+            margin-bottom: 15px;
         }
 
-        /* --- コンテンツエリア --- */
+        /* ヘッダー用の一覧ボタン */
+        .btn-header-link {
+            display: inline-block;
+            background-color: var(--nikkei-accent);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 101;
+            position: relative;
+        }
+
+        .btn-header-link:hover {
+            background-color: #b08d66;
+            transform: translateY(-2px);
+        }
+
+        .btn-header-link span {
+            margin-right: 5px;
+        }
+
         .container {
             padding: 25px 20px;
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .question-card {
             background: white;
-            padding: 25px;
+            padding: 20px 25px 35px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(12, 43, 94, 0.08);
             margin-bottom: 25px;
@@ -91,40 +120,96 @@
             margin-top: 0;
             color: var(--nikkei-logo-bg);
             font-family: 'Noto Serif JP', serif;
-            font-size: 1.15em;
+            font-size: 1.1em;
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .options label {
+        /* --- リアルなお猪口UIのスタイル --- */
+        .scale-labels {
             display: flex;
-            align-items: center;
-            margin: 12px 0;
-            padding: 14px;
-            background: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-            border: 1px solid #e0e0e0;
-            transition: all 0.2s ease;
-        }
-
-        .options label:hover {
-            background: #f0f4fa;
-        }
-
-        .options label.selected {
-            background: #eef4ff;
-            border-color: var(--nikkei-logo-bg);
-            color: var(--nikkei-logo-bg);
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #555;
             font-weight: bold;
-            box-shadow: 0 0 0 1px var(--nikkei-logo-bg);
+            margin-bottom: 15px;
+            padding: 0 5px;
         }
 
-        .options input {
-            margin-right: 12px;
-            accent-color: var(--nikkei-logo-bg);
-            transform: scale(1.2);
+        .rating-group {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 10px 0;
+            z-index: 10;
+        }
+
+        .rating-group input[type="radio"] {
+            display: none;
+        }
+
+        /* お猪口（ラベル）のスタイル */
+        .rating-group label {
+            width: 45px;
+            height: 42px;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 2px 2px 20px 20px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            touch-action: manipulation;
+        }
+
+        /* お猪口の中の数字 */
+        .rating-group label span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            font-weight: bold;
+            color: #999;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: color 0.2s;
+            font-size: 1.2em;
+            pointer-events: none;
+        }
+
+        /* 注がれる液体 */
+        .rating-group label::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background-color: var(--sake-liquid);
+            opacity: 0.9;
+            transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .rating-group label:hover {
+            border-color: var(--nikkei-accent);
+            transform: translateY(-2px);
+        }
+
+        .rating-group label.active-fill::before {
+            height: 90%;
+        }
+
+        .rating-group label.active-fill {
+            border-color: #dcb368;
+            /* 黄金色に合わせた枠線 */
+        }
+
+        .rating-group label.active-fill span {
+            color: #0C2B5E;
         }
 
         .btn-primary {
@@ -141,6 +226,7 @@
             box-shadow: 0 4px 10px rgba(12, 43, 94, 0.3);
             font-family: 'Noto Serif JP', serif;
             letter-spacing: 0.1em;
+            margin-top: 10px;
         }
 
         .btn-primary:hover {
@@ -167,20 +253,18 @@
             box-shadow: 0 4px 8px rgba(74, 21, 75, 0.3);
             transition: background 0.3s, transform 0.1s;
         }
+
         .btn-slack:hover {
             background-color: #611f69;
             transform: translateY(-2px);
         }
-        .btn-slack:active {
-            transform: translateY(1px);
-        }
+
         .slack-icon {
             margin-right: 8px;
             font-weight: normal;
             opacity: 0.9;
         }
 
-        /* 結果エリア */
         #result-area {
             display: none;
             margin-top: 30px;
@@ -188,8 +272,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         #result-area h2 {
@@ -213,10 +304,10 @@
             width: 100%;
             height: 200px;
             object-fit: contain;
-            background-color: #fff; 
+            background-color: #fff;
             border-radius: 4px;
             margin-bottom: 12px;
-            border: 1px solid #f0f0f0; 
+            border: 1px solid #f0f0f0;
         }
 
         .sake-name {
@@ -255,37 +346,50 @@
         <img src="NNN_logo.jpg" alt="NIKKEI Nihonshu Night Logo" class="logo-img">
         <h1>おすすめ日本酒診断</h1>
         <div class="sub-title">今夜のラインナップから、あなたに合う一杯を探します</div>
+
+        <a href="list.html" class="btn-header-link">
+            <span>📜</span>全ラインナップを見る
+        </a>
     </header>
 
     <div class="container">
         <div id="quiz-area">
+
             <div class="question-card">
                 <h3>Q1. 甘さの好みは？</h3>
-                <div class="options">
-                    <label><input type="radio" name="sweetness" value="1"> <span>キリッと辛口</span></label>
-                    <label class="selected"><input type="radio" name="sweetness" value="2" checked>
-                        <span>どちらとも言えない</span></label>
-                    <label><input type="radio" name="sweetness" value="3"> <span>フルーティーな甘口</span></label>
+                <div class="scale-labels"><span>辛口</span><span>甘口</span></div>
+                <div class="rating-group" id="group-sweet">
+                    <input type="radio" name="sweetness" id="sw1" value="1"><label for="sw1"><span>1</span></label>
+                    <input type="radio" name="sweetness" id="sw2" value="2"><label for="sw2"><span>2</span></label>
+                    <input type="radio" name="sweetness" id="sw3" value="3" checked><label
+                        for="sw3"><span>3</span></label>
+                    <input type="radio" name="sweetness" id="sw4" value="4"><label for="sw4"><span>4</span></label>
+                    <input type="radio" name="sweetness" id="sw5" value="5"><label for="sw5"><span>5</span></label>
                 </div>
             </div>
 
             <div class="question-card">
                 <h3>Q2. 香りの強さは？</h3>
-                <div class="options">
-                    <label><input type="radio" name="aroma" value="1"> <span>穏やかで落ち着く</span></label>
-                    <label class="selected"><input type="radio" name="aroma" value="2" checked>
-                        <span>バランス重視</span></label>
-                    <label><input type="radio" name="aroma" value="3"> <span>華やかに香る</span></label>
+                <div class="scale-labels"><span>穏やか</span><span>華やか</span></div>
+                <div class="rating-group" id="group-aroma">
+                    <input type="radio" name="aroma" id="ar1" value="1"><label for="ar1"><span>1</span></label>
+                    <input type="radio" name="aroma" id="ar2" value="2"><label for="ar2"><span>2</span></label>
+                    <input type="radio" name="aroma" id="ar3" value="3" checked><label for="ar3"><span>3</span></label>
+                    <input type="radio" name="aroma" id="ar4" value="4"><label for="ar4"><span>4</span></label>
+                    <input type="radio" name="aroma" id="ar5" value="5"><label for="ar5"><span>5</span></label>
                 </div>
             </div>
 
             <div class="question-card">
                 <h3>Q3. 飲み口の重さは？</h3>
-                <div class="options">
-                    <label><input type="radio" name="richness" value="1"> <span>スッキリ淡麗</span></label>
-                    <label class="selected"><input type="radio" name="richness" value="2" checked>
-                        <span>中くらい</span></label>
-                    <label><input type="radio" name="richness" value="3"> <span>ドッシリ濃醇</span></label>
+                <div class="scale-labels"><span>淡麗</span><span>濃醇</span></div>
+                <div class="rating-group" id="group-rich">
+                    <input type="radio" name="richness" id="ri1" value="1"><label for="ri1"><span>1</span></label>
+                    <input type="radio" name="richness" id="ri2" value="2"><label for="ri2"><span>2</span></label>
+                    <input type="radio" name="richness" id="ri3" value="3" checked><label
+                        for="ri3"><span>3</span></label>
+                    <input type="radio" name="richness" id="ri4" value="4"><label for="ri4"><span>4</span></label>
+                    <input type="radio" name="richness" id="ri5" value="5"><label for="ri5"><span>5</span></label>
                 </div>
             </div>
 
@@ -295,7 +399,7 @@
         <div id="result-area">
             <h2>あなたへのおすすめ</h2>
             <div id="sake-list"></div>
-            
+
             <div id="share-section"></div>
 
             <button onclick="location.reload()" class="btn-primary"
@@ -306,13 +410,50 @@
     <script src="sake-list.js"></script>
 
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                updateAllVisuals();
+            } catch (e) {
+                console.error("Visual update failed:", e);
+            }
+        });
+
+        document.querySelectorAll('input[type=radio]').forEach(radio => {
+            radio.addEventListener('change', updateAllVisuals);
+        });
+
+        function updateAllVisuals() {
+            const groups = ['group-sweet', 'group-aroma', 'group-rich'];
+
+            groups.forEach(groupId => {
+                const container = document.getElementById(groupId);
+                const checkedRadio = container.querySelector('input:checked');
+
+                if (checkedRadio) {
+                    const val = parseInt(checkedRadio.value);
+                    const labels = container.querySelectorAll('label');
+
+                    labels.forEach((label, index) => {
+                        if (index + 1 <= val) {
+                            label.classList.add('active-fill');
+                        } else {
+                            label.classList.remove('active-fill');
+                        }
+                    });
+                }
+            });
+        }
 
         function diagnose() {
+            if (typeof sakeData === 'undefined') {
+                alert("エラー：お酒のデータ(sake-list.js)が読み込めませんでした。");
+                return;
+            }
+
             const u_sweet = parseInt(document.querySelector('input[name="sweetness"]:checked').value);
             const u_aroma = parseInt(document.querySelector('input[name="aroma"]:checked').value);
             const u_rich = parseInt(document.querySelector('input[name="richness"]:checked').value);
 
-            // sakeDataは sake-list.js から読み込まれています
             const results = sakeData.map(sake => {
                 const diff = Math.abs(sake.sweetness - u_sweet)
                     + Math.abs(sake.aroma - u_aroma)
@@ -328,8 +469,9 @@
             results.slice(0, 3).forEach((sake, index) => {
                 const div = document.createElement('div');
                 div.className = 'sake-card';
-                const matchRate = Math.max(0, 100 - (sake.diff * 15));
-                
+
+                const matchRate = Math.max(0, 100 - (sake.diff * 8));
+
                 div.innerHTML = `
                     <div class="match-score">マッチ度: ${matchRate}%</div>
                     <img src="${sake.image}" alt="${sake.name}" class="sake-img">
@@ -339,7 +481,7 @@
                 listDiv.appendChild(div);
             });
 
-            const bestSake = results[0]; 
+            const bestSake = results[0];
             const shareSection = document.getElementById('share-section');
             shareSection.innerHTML = `
                 <button onclick="shareToSlack('${bestSake.name}')" class="btn-slack">
@@ -370,17 +512,8 @@
         }
 
         function openSlack() {
-            // SLACK_CHANNEL_ID も sake-list.js から読み込まれます
             window.location.href = `https://slack.com/app_redirect?channel=${SLACK_CHANNEL_ID}`;
         }
-
-        document.querySelectorAll('.options label').forEach(label => {
-            label.addEventListener('click', function () {
-                const group = this.closest('.options');
-                group.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
     </script>
 </body>
 

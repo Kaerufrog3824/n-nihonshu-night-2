@@ -23,8 +23,8 @@
             --bg-color: #f4f4f7;
             --text-color: #333;
             --slack-color: #4A154B;
-            /* ▼ ここを「黄金色」に戻しました！ ▼ */
             --sake-liquid: #fadd75;
+            /* 黄金色 */
         }
 
         body {
@@ -205,7 +205,6 @@
 
         .rating-group label.active-fill {
             border-color: #dcb368;
-            /* 黄金色に合わせた枠線 */
         }
 
         .rating-group label.active-fill span {
@@ -314,8 +313,27 @@
             font-size: 1.3em;
             font-weight: bold;
             color: var(--nikkei-logo-bg);
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-family: 'Noto Serif JP', serif;
+        }
+
+        /* ▼ 追加：診断結果用の酒蔵情報スタイル */
+        .sake-info {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .pref-badge {
+            background-color: #eee;
+            color: #444;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 8px;
+            font-size: 0.9em;
         }
 
         .sake-desc {
@@ -476,6 +494,11 @@
                     <div class="match-score">マッチ度: ${matchRate}%</div>
                     <img src="${sake.image}" alt="${sake.name}" class="sake-img">
                     <div class="sake-name">No.${index + 1} ${sake.name}</div>
+                    
+                    <div class="sake-info">
+                        <span class="pref-badge">${sake.prefecture}</span>${sake.brewery}
+                    </div>
+
                     <div class="sake-desc">${sake.desc}</div>
                 `;
                 listDiv.appendChild(div);

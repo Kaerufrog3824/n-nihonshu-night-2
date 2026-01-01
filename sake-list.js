@@ -32,5 +32,14 @@ const sakeData = [
         desc: "ホップの爆発的香りとドブロクの甘酸っぱさ。ビールの技法を取り入れた新時代のSAKE。",
         sweetness: 4, aroma: 5, richness: 4,
         image: "sake/sake_3.jpg"
-    }
+    },
+    {
+        id: 4,
+        name: "廣戸川 純米にごり生酒",
+        prefecture: "福島県",
+        brewery: "松崎酒造",
+        desc: "「日本三大にごり」の一角。白桃のような香りと活性にごりの弾けるガス感。甘みとキレが同居するシルキーなにごり。",
+        sweetness: 4, aroma: 4, richness: 3,
+        image: "sake/sake_4.jpg"
+    },
 ];

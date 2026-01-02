@@ -4,374 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIKKEI Nihonshu Night - おすすめ診断</title>
-
+    <title>おすすめ診断 - NIKKEI Nihonshu Night</title>
     <link rel="icon" href="NNN_logo.jpg">
     <link rel="apple-touch-icon" href="NNN_logo.jpg">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap"
         rel="stylesheet">
-
-    <style>
-        /* --- カラーパレット定義 --- */
-        :root {
-            --nikkei-logo-bg: #0C2B5E;
-            --nikkei-accent: #C4A480;
-            --bg-color: #f4f4f7;
-            --text-color: #333;
-            --slack-color: #4A154B;
-            --sake-liquid: #fadd75;
-            /* 黄金色 */
-        }
-
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: var(--nikkei-logo-bg);
-            color: white;
-            padding: 30px 20px 25px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 100;
-        }
-
-        .logo-img {
-            max-width: 220px;
-            height: auto;
-            margin-bottom: 10px;
-            background-color: var(--nikkei-logo-bg);
-            display: block;
-        }
-
-        h1 {
-            margin: 10px 0 0 0;
-            font-size: 1.5em;
-            font-weight: 700;
-            font-family: 'Noto Serif JP', serif;
-            letter-spacing: 0.05em;
-        }
-
-        .sub-title {
-            font-size: 0.9em;
-            opacity: 0.85;
-            margin-top: 5px;
-            font-family: 'Noto Serif JP', serif;
-            margin-bottom: 15px;
-        }
-
-        /* ヘッダー用の一覧ボタン */
-        .btn-header-link {
-            display: inline-block;
-            background-color: var(--nikkei-accent);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.95em;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, background 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 101;
-            position: relative;
-        }
-
-        .btn-header-link:hover {
-            background-color: #b08d66;
-            transform: translateY(-2px);
-        }
-
-        .btn-header-link span {
-            margin-right: 5px;
-        }
-
-        .container {
-            padding: 25px 20px;
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .question-card {
-            background: white;
-            padding: 20px 25px 35px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(12, 43, 94, 0.08);
-            margin-bottom: 25px;
-            border-top: 4px solid var(--nikkei-logo-bg);
-        }
-
-        .question-card h3 {
-            margin-top: 0;
-            color: var(--nikkei-logo-bg);
-            font-family: 'Noto Serif JP', serif;
-            font-size: 1.1em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        /* --- リアルなお猪口UIのスタイル --- */
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9em;
-            color: #555;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding: 0 5px;
-        }
-
-        .rating-group {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin: 10px 0;
-            z-index: 10;
-        }
-
-        .rating-group input[type="radio"] {
-            display: none;
-        }
-
-        /* お猪口（ラベル）のスタイル */
-        .rating-group label {
-            width: 45px;
-            height: 42px;
-            background-color: white;
-            border: 2px solid #ddd;
-            border-radius: 2px 2px 20px 20px;
-            position: relative;
-            cursor: pointer;
-            overflow: hidden;
-            transition: transform 0.2s ease, border-color 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            touch-action: manipulation;
-        }
-
-        /* お猪口の中の数字 */
-        .rating-group label span {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            font-weight: bold;
-            color: #999;
-            font-family: 'Noto Sans JP', sans-serif;
-            transition: color 0.2s;
-            font-size: 1.2em;
-            pointer-events: none;
-        }
-
-        /* 注がれる液体 */
-        .rating-group label::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background-color: var(--sake-liquid);
-            opacity: 0.9;
-            transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .rating-group label:hover {
-            border-color: var(--nikkei-accent);
-            transform: translateY(-2px);
-        }
-
-        .rating-group label.active-fill::before {
-            height: 90%;
-        }
-
-        .rating-group label.active-fill {
-            border-color: #dcb368;
-        }
-
-        .rating-group label.active-fill span {
-            color: #0C2B5E;
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: var(--nikkei-logo-bg);
-            color: white;
-            border: none;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(12, 43, 94, 0.3);
-            font-family: 'Noto Serif JP', serif;
-            letter-spacing: 0.1em;
-            margin-top: 10px;
-        }
-
-        .btn-primary:hover {
-            background: #1a4f9c;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(12, 43, 94, 0.4);
-        }
-
-        /* Slackシェアボタン */
-        .btn-slack {
-            display: block;
-            width: 100%;
-            margin-top: 30px;
-            padding: 14px;
-            background-color: var(--slack-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-family: 'Noto Sans JP', sans-serif;
-            cursor: pointer;
-            font-size: 1em;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(74, 21, 75, 0.3);
-            transition: background 0.3s, transform 0.1s;
-        }
-
-        .btn-slack:hover {
-            background-color: #611f69;
-            transform: translateY(-2px);
-        }
-
-        .slack-icon {
-            margin-right: 8px;
-            font-weight: normal;
-            opacity: 0.9;
-        }
-
-        #result-area {
-            display: none;
-            margin-top: 30px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        #result-area h2 {
-            text-align: center;
-            color: var(--nikkei-logo-bg);
-            font-family: 'Noto Serif JP', serif;
-            margin-bottom: 25px;
-        }
-
-        .sake-card {
-            background: white;
-            border-left: 6px solid var(--nikkei-logo-bg);
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-            position: relative;
-        }
-
-        .sake-img {
-            width: 100%;
-            height: 200px;
-            object-fit: contain;
-            background-color: #fff;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .sake-name {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: var(--nikkei-logo-bg);
-            margin-bottom: 5px;
-            font-family: 'Noto Serif JP', serif;
-        }
-
-        /* ▼ 追加：診断結果用の酒蔵情報スタイル */
-        .sake-info {
-            font-size: 0.85em;
-            color: #666;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-        }
-
-        .pref-badge {
-            background-color: #eee;
-            color: #444;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-right: 8px;
-            font-size: 0.9em;
-        }
-
-        .sake-desc {
-            font-size: 0.95em;
-            color: #555;
-            line-height: 1.7;
-        }
-
-        .match-score {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 0.9em;
-            background: #f0f4fa;
-            color: var(--nikkei-logo-bg);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-family: 'Noto Sans JP', sans-serif;
-            z-index: 10;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-    <header>
-        <img src="NNN_logo.jpg" alt="NIKKEI Nihonshu Night Logo" class="logo-img">
-        <h1>おすすめ日本酒診断</h1>
-        <div class="sub-title">今夜のラインナップから、あなたに合う一杯を探します</div>
-
-        <a href="list.html" class="btn-header-link">
-            <span>📜</span>本日のラインナップへ
-        </a>
-    </header>
-
     <div class="container">
         <div id="quiz-area">
+            <p class="page-desc">好みに合わせて、今日飲むべき最初の一杯をAIが提案します。</p>
 
             <div class="question-card">
                 <h3>Q1. 甘さの好みは？</h3>
@@ -385,7 +30,6 @@
                     <input type="radio" name="sweetness" id="sw5" value="5"><label for="sw5"><span>5</span></label>
                 </div>
             </div>
-
             <div class="question-card">
                 <h3>Q2. 香りの強さは？</h3>
                 <div class="scale-labels"><span>穏やか</span><span>華やか</span></div>
@@ -397,7 +41,6 @@
                     <input type="radio" name="aroma" id="ar5" value="5"><label for="ar5"><span>5</span></label>
                 </div>
             </div>
-
             <div class="question-card">
                 <h3>Q3. 飲み口の重さは？</h3>
                 <div class="scale-labels"><span>淡麗</span><span>濃醇</span></div>
@@ -410,132 +53,74 @@
                     <input type="radio" name="richness" id="ri5" value="5"><label for="ri5"><span>5</span></label>
                 </div>
             </div>
-
-            <button id="btn-diagnose" class="btn-primary" onclick="diagnose()">診断する</button>
+            <button class="btn-primary" onclick="diagnose()">診断する</button>
         </div>
 
         <div id="result-area">
-            <h2>あなたへのおすすめ</h2>
-            <div id="sake-list"></div>
-
+            <h3 style="text-align:center; color:#0C2B5E;">あなたへのおすすめ</h3>
+            <div id="diagnosis-result-list"></div>
             <div id="share-section"></div>
-
             <button onclick="location.reload()" class="btn-primary"
                 style="margin-top:20px; background-color:#777; box-shadow:none;">もう一度診断する</button>
         </div>
     </div>
 
+    <script src="common.js"></script>
     <script src="sake-list.js"></script>
 
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                updateAllVisuals();
-            } catch (e) {
-                console.error("Visual update failed:", e);
-            }
-        });
-
-        document.querySelectorAll('input[type=radio]').forEach(radio => {
-            radio.addEventListener('change', updateAllVisuals);
-        });
+        window.addEventListener('DOMContentLoaded', () => { try { updateAllVisuals(); } catch (e) { } });
+        document.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', updateAllVisuals));
 
         function updateAllVisuals() {
-            const groups = ['group-sweet', 'group-aroma', 'group-rich'];
-
-            groups.forEach(groupId => {
-                const container = document.getElementById(groupId);
-                const checkedRadio = container.querySelector('input:checked');
-
-                if (checkedRadio) {
-                    const val = parseInt(checkedRadio.value);
-                    const labels = container.querySelectorAll('label');
-
-                    labels.forEach((label, index) => {
-                        if (index + 1 <= val) {
-                            label.classList.add('active-fill');
-                        } else {
-                            label.classList.remove('active-fill');
-                        }
-                    });
-                }
+            ['group-sweet', 'group-aroma', 'group-rich'].forEach(id => {
+                const c = document.getElementById(id);
+                const val = parseInt(c.querySelector('input:checked')?.value || 3);
+                c.querySelectorAll('label').forEach((l, i) => {
+                    if (i + 1 <= val) l.classList.add('active-fill'); else l.classList.remove('active-fill');
+                });
             });
         }
 
         function diagnose() {
-            if (typeof sakeData === 'undefined') {
-                alert("エラー：お酒のデータ(sake-list.js)が読み込めませんでした。");
-                return;
-            }
-
+            if (typeof sakeData === 'undefined') { alert("データ読込エラー"); return; }
             const u_sweet = parseInt(document.querySelector('input[name="sweetness"]:checked').value);
             const u_aroma = parseInt(document.querySelector('input[name="aroma"]:checked').value);
             const u_rich = parseInt(document.querySelector('input[name="richness"]:checked').value);
 
-            const results = sakeData.map(sake => {
-                const diff = Math.abs(sake.sweetness - u_sweet)
-                    + Math.abs(sake.aroma - u_aroma)
-                    + Math.abs(sake.richness - u_rich);
-                return { ...sake, diff: diff };
-            });
+            const results = sakeData.map(s => {
+                const diff = Math.abs(s.sweetness - u_sweet) + Math.abs(s.aroma - u_aroma) + Math.abs(s.richness - u_rich);
+                return { ...s, diff: diff };
+            }).sort((a, b) => a.diff - b.diff);
 
-            results.sort((a, b) => a.diff - b.diff);
-
-            const listDiv = document.getElementById('sake-list');
+            const listDiv = document.getElementById('diagnosis-result-list');
             listDiv.innerHTML = "";
+            results.slice(0, 3).forEach((s, i) => {
+                const match = Math.max(0, 100 - (s.diff * 8));
 
-            results.slice(0, 3).forEach((sake, index) => {
-                const div = document.createElement('div');
-                div.className = 'sake-card';
-
-                const matchRate = Math.max(0, 100 - (sake.diff * 8));
-
-                div.innerHTML = `
-                    <div class="match-score">マッチ度: ${matchRate}%</div>
-                    <img src="${sake.image}" alt="${sake.name}" class="sake-img">
-                    <div class="sake-name">No.${index + 1} ${sake.name}</div>
-                    
-                    <div class="sake-info">
-                        <span class="pref-badge">${sake.prefecture}</span>${sake.brewery}
-                    </div>
-
-                    <div class="sake-desc">${sake.desc}</div>
-                `;
-                listDiv.appendChild(div);
+                // ▼ ここを修正：画像を sake-img-area で囲みました
+                listDiv.innerHTML += `
+                    <div class="sake-card">
+                        <div class="match-score">マッチ度: ${match}%</div>
+                        <div class="sake-img-area">
+                            <img src="${s.image}" alt="${s.name}" class="sake-img">
+                        </div>
+                        <div class="sake-name">No.${i + 1} ${s.name}</div>
+                        <div class="sake-info"><span class="pref-badge">${s.prefecture}</span>${s.brewery}</div>
+                        <div style="font-size:0.9em; color:#555;">${s.desc}</div>
+                    </div>`;
             });
 
-            const bestSake = results[0];
-            const shareSection = document.getElementById('share-section');
-            shareSection.innerHTML = `
-                <button onclick="shareToSlack('${bestSake.name}')" class="btn-slack">
-                    <span class="slack-icon">#hobby-nihonshuで結果をシェア
-                </button>
-            `;
-
+            document.getElementById('share-section').innerHTML = `<button onclick="share('${results[0].name}')" class="btn-slack">#hobby-nihonshuで結果をシェア</button>`;
             document.getElementById('quiz-area').style.display = 'none';
             document.getElementById('result-area').style.display = 'block';
             window.scrollTo(0, 0);
         }
 
-        function shareToSlack(sakeName) {
-            const text = `私のベストマッチは『${sakeName}』でした！ #NNN2 #おすすめ日本酒診断`;
-
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert("投稿文をコピーしました！\nこのあとSlackが開くので、入力欄に貼り付けて投稿してください。");
-                    openSlack();
-                }).catch(err => {
-                    alert("コピーできませんでした。Slackを開きます。");
-                    openSlack();
-                });
-            } else {
-                alert("ブラウザが対応していないため自動コピーできませんでした。\nSlackを開きます。");
-                openSlack();
-            }
-        }
-
-        function openSlack() {
-            window.location.href = `https://slack.com/app_redirect?channel=${SLACK_CHANNEL_ID}`;
+        function share(name) {
+            if (navigator.clipboard) navigator.clipboard.writeText(`私のベストマッチは『${name}』でした！ #NNN2`).then(() => alert("コピーしました！Slackを開きます"));
+            else alert("コピー失敗。Slackを開きます");
+            setTimeout(() => location.href = `https://slack.com/app_redirect?channel=${SLACK_CHANNEL_ID}`, 500);
         }
     </script>
 </body>

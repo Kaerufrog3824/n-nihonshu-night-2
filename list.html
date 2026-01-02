@@ -5,327 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全ラインナップ - NIKKEI Nihonshu Night</title>
-
     <link rel="icon" href="NNN_logo.jpg">
     <link rel="apple-touch-icon" href="NNN_logo.jpg">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap"
         rel="stylesheet">
-
-    <style>
-        /* --- index.htmlと共通の定義 --- */
-        :root {
-            --nikkei-logo-bg: #0C2B5E;
-            --nikkei-accent: #C4A480;
-            --bg-color: #f4f4f7;
-            --text-color: #333;
-            --map-hover: #1a4f9c;
-            --map-active: #dcb368;
-        }
-
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: var(--nikkei-logo-bg);
-            color: white;
-            padding: 30px 20px 25px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 100;
-        }
-
-        .logo-img {
-            max-width: 180px;
-            /* 一覧ページなので少し控えめに */
-            height: auto;
-            margin-bottom: 10px;
-            background-color: var(--nikkei-logo-bg);
-            display: block;
-        }
-
-        h1 {
-            margin: 5px 0 0 0;
-            font-size: 1.4em;
-            font-family: 'Noto Serif JP', serif;
-        }
-
-        .sub-title {
-            font-size: 0.9em;
-            opacity: 0.85;
-            margin-top: 5px;
-            font-family: 'Noto Serif JP', serif;
-            margin-bottom: 15px;
-        }
-
-        /* ▼ 診断ページへの戻るボタン（index.htmlと共通デザイン） */
-        .btn-header-link {
-            display: inline-block;
-            background-color: var(--nikkei-accent);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.95em;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, background 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 101;
-            position: relative;
-        }
-
-        .btn-header-link:hover {
-            background-color: #b08d66;
-            transform: translateY(-2px);
-        }
-
-        .btn-header-link span {
-            margin-right: 5px;
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        /* --- 日本地図UI --- */
-        .map-section {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .map-title {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: var(--nikkei-logo-bg);
-            margin-bottom: 15px;
-            font-family: 'Noto Serif JP', serif;
-        }
-
-        .japan-map-svg {
-            max-width: 100%;
-            height: auto;
-            max-height: 300px;
-            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1));
-        }
-
-        .region-path {
-            fill: #e0e0e0;
-            stroke: #fff;
-            stroke-width: 1.5;
-            cursor: pointer;
-            transition: fill 0.3s, transform 0.2s;
-        }
-
-        .region-path:hover {
-            fill: var(--map-hover);
-            transform: translateY(-2px);
-        }
-
-        .region-path.active {
-            fill: var(--nikkei-accent);
-            filter: brightness(1.1);
-        }
-
-        /* リセットボタン */
-        .reset-btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 8px 20px;
-            background: #eee;
-            color: #555;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-            border: none;
-        }
-
-        .reset-btn:hover {
-            background: #ddd;
-        }
-
-        .reset-btn.hidden {
-            display: none;
-        }
-
-        #current-filter {
-            margin-top: 10px;
-            font-weight: bold;
-            color: var(--nikkei-logo-bg);
-            height: 1.5em;
-        }
-
-
-        /* --- グリッドレイアウト --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* --- お酒カード --- */
-        .sake-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s;
-        }
-
-        .sake-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-        }
-
-        .sake-img-area {
-            width: 100%;
-            height: 200px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid #eee;
-        }
-
-        .sake-img {
-            max-width: 100%;
-            max-height: 180px;
-            object-fit: contain;
-        }
-
-        .card-body {
-            padding: 15px;
-            flex-grow: 1;
-        }
-
-        .sake-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: var(--nikkei-logo-bg);
-            margin-bottom: 5px;
-            font-family: 'Noto Serif JP', serif;
-            border-left: 4px solid var(--nikkei-accent);
-            padding-left: 10px;
-        }
-
-        .sake-info {
-            font-size: 0.85em;
-            color: #666;
-            margin-bottom: 12px;
-            padding-left: 14px;
-            display: flex;
-            align-items: center;
-        }
-
-        .pref-badge {
-            background-color: #eee;
-            color: #444;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-right: 8px;
-            font-size: 0.9em;
-        }
-
-        .sake-desc {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 15px;
-            min-height: 3em;
-        }
-
-        /* --- パラメータバー --- */
-        .param-row {
-            display: flex;
-            align-items: center;
-            font-size: 0.85em;
-            margin-bottom: 6px;
-        }
-
-        .param-label {
-            width: 50px;
-            font-weight: bold;
-            color: #666;
-        }
-
-        .bar-bg {
-            flex-grow: 1;
-            height: 8px;
-            background: #eee;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-left: 10px;
-        }
-
-        .bar-fill {
-            height: 100%;
-            background: var(--nikkei-logo-bg);
-        }
-
-        .no-data-msg {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-            font-weight: bold;
-            grid-column: 1 / -1;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-    <header>
-        <img src="NNN_logo.jpg" alt="NIKKEI Nihonshu Night Logo" class="logo-img">
-        <h1>本日のラインナップ</h1>
-        <div class="sub-title">現在提供中のお酒一覧です</div>
-
-        <a href="index.html" class="btn-header-link">
-            <span>🍶</span>おすすめ日本酒診断へ
-        </a>
-    </header>
-
     <div class="container">
-
         <div class="map-section">
-            <div class="map-title">地域で絞り込む</div>
-
+            <div style="font-weight:bold; color:#0C2B5E; margin-bottom:10px;">地域で絞り込む</div>
             <svg class="japan-map-svg" viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg">
                 <path id="hokkaido" class="region-path" d="M380,10 L480,30 L460,90 L390,100 L350,60 Z"
                     onclick="filterList('hokkaido')"></path>
@@ -344,118 +35,62 @@
                 <path id="kyushu" class="region-path" d="M50,200 L120,210 L110,290 L40,270 Z"
                     onclick="filterList('kyushu')"></path>
             </svg>
-
             <div id="current-filter"></div>
             <button id="reset-btn" class="reset-btn hidden" onclick="resetFilter()">すべて表示</button>
         </div>
 
-
-        <div id="grid-container" class="grid">
-        </div>
-
-        <div style="text-align:center; margin-top:40px;">
-            <a href="index.html" style="color:#666; text-decoration:none; font-size:0.9em;">
-                NIKKEI Nihonshu Night
-            </a>
-        </div>
+        <div id="grid-container" class="grid"></div>
     </div>
 
+    <script src="common.js"></script>
     <script src="sake-list.js"></script>
 
     <script>
-        const regionMap = {
-            "hokkaido": ["北海道"],
-            "tohoku": ["青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県"],
-            "kanto": ["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県"],
-            "chubu": ["新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県"],
-            "kinki": ["三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"],
-            "chugoku": ["鳥取県", "島根県", "岡山県", "広島県", "山口県"],
-            "shikoku": ["徳島県", "香川県", "愛媛県", "高知県"],
-            "kyushu": ["福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"]
-        };
-
-        const regionNamesJP = {
-            "hokkaido": "北海道", "tohoku": "東北", "kanto": "関東", "chubu": "中部",
-            "kinki": "近畿", "chugoku": "中国", "shikoku": "四国", "kyushu": "九州・沖縄"
-        };
-
-        const container = document.getElementById('grid-container');
-        const resetBtn = document.getElementById('reset-btn');
-        const currentFilterText = document.getElementById('current-filter');
-        const paths = document.querySelectorAll('.region-path');
+        const regionMap = { "hokkaido": ["北海道"], "tohoku": ["青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県"], "kanto": ["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県"], "chubu": ["新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県"], "kinki": ["三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"], "chugoku": ["鳥取県", "島根県", "岡山県", "広島県", "山口県"], "shikoku": ["徳島県", "香川県", "愛媛県", "高知県"], "kyushu": ["福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"] };
+        const regionNames = { "hokkaido": "北海道", "tohoku": "東北", "kanto": "関東", "chubu": "中部", "kinki": "近畿", "chugoku": "中国", "shikoku": "四国", "kyushu": "九州・沖縄" };
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof sakeData !== 'undefined') {
-                renderList(sakeData);
-            } else {
-                container.innerHTML = "<div class='no-data-msg'>データを読み込めませんでした</div>";
-            }
+            if (typeof sakeData !== 'undefined') renderList(sakeData);
+            else document.getElementById('grid-container').innerHTML = "<div class='no-data-msg'>データ読込エラー</div>";
         });
 
         function renderList(list) {
+            const container = document.getElementById('grid-container');
             container.innerHTML = "";
+            if (list.length === 0) { container.innerHTML = `<div class="no-data-msg">このエリアのお酒はまだ登録されていません🍶</div>`; return; }
 
-            if (list.length === 0) {
-                container.innerHTML = `<div class="no-data-msg">このエリアのお酒はまだ登録されていません🍶<br>当日の追加をお楽しみに！</div>`;
-                return;
-            }
-
-            list.forEach(sake => {
-                const card = document.createElement('div');
-                card.className = 'sake-card';
-
-                const pSweet = sake.sweetness * 20;
-                const pAroma = sake.aroma * 20;
-                const pRich = sake.richness * 20;
-
-                card.innerHTML = `
-                    <div class="sake-img-area">
-                        <img src="${sake.image}" alt="${sake.name}" class="sake-img">
-                    </div>
+            list.forEach(s => {
+                container.innerHTML += `
+                <div class="sake-card">
+                    <div class="sake-img-area"><img src="${s.image}" alt="${s.name}" class="sake-img"></div>
                     <div class="card-body">
-                        <div class="sake-name">${sake.name}</div>
-                        <div class="sake-info">
-                            <span class="pref-badge">${sake.prefecture}</span>${sake.brewery}
-                        </div>
-                        <div class="sake-desc">${sake.desc}</div>
-                        
+                        <div class="sake-name">${s.name}</div>
+                        <div class="sake-info"><span class="pref-badge">${s.prefecture}</span>${s.brewery}</div>
+                        <div class="sake-desc">${s.desc}</div>
                         <div class="params">
-                            <div class="param-row">
-                                <span class="param-label">甘さ</span>
-                                <div class="bar-bg"><div class="bar-fill" style="width: ${pSweet}%"></div></div>
-                            </div>
-                            <div class="param-row">
-                                <span class="param-label">香り</span>
-                                <div class="bar-bg"><div class="bar-fill" style="width: ${pAroma}%"></div></div>
-                            </div>
-                            <div class="param-row">
-                                <span class="param-label">重さ</span>
-                                <div class="bar-bg"><div class="bar-fill" style="width: ${pRich}%"></div></div>
-                            </div>
+                            <div class="param-row"><span class="param-label">甘さ</span><div class="bar-bg"><div class="bar-fill" style="width: ${s.sweetness * 20}%"></div></div></div>
+                            <div class="param-row"><span class="param-label">香り</span><div class="bar-bg"><div class="bar-fill" style="width: ${s.aroma * 20}%"></div></div></div>
+                            <div class="param-row"><span class="param-label">重さ</span><div class="bar-bg"><div class="bar-fill" style="width: ${s.richness * 20}%"></div></div></div>
                         </div>
                     </div>
-                `;
-                container.appendChild(card);
+                </div>`;
             });
         }
 
-        function filterList(regionId) {
-            paths.forEach(p => p.classList.remove('active'));
-            document.getElementById(regionId).classList.add('active');
-
-            const targetPrefs = regionMap[regionId];
-            const filteredData = sakeData.filter(sake => targetPrefs.includes(sake.prefecture));
-
-            renderList(filteredData);
-            currentFilterText.textContent = `▼ ${regionNamesJP[regionId]}エリアのお酒を表示中`;
-            resetBtn.classList.remove('hidden');
+        function filterList(id) {
+            document.querySelectorAll('.region-path').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            const target = regionMap[id];
+            renderList(sakeData.filter(s => target.includes(s.prefecture)));
+            document.getElementById('current-filter').textContent = `▼ ${regionNames[id]}エリアを表示中`;
+            document.getElementById('reset-btn').classList.remove('hidden');
         }
 
         function resetFilter() {
-            paths.forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.region-path').forEach(p => p.classList.remove('active'));
             renderList(sakeData);
-            currentFilterText.textContent = "";
-            resetBtn.classList.add('hidden');
+            document.getElementById('current-filter').textContent = "";
+            document.getElementById('reset-btn').classList.add('hidden');
         }
     </script>
 </body>

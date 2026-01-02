@@ -264,6 +264,8 @@ h1 {
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    font-size: 1.1em;
+    font-family: 'Noto Sans JP', sans-serif;
 }
 
 /* --- コンポーネント: 酒カード --- */

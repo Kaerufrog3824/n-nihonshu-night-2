@@ -35,7 +35,7 @@ function renderNav() {
                 <span class="tab-icon">おすすめ診断
             </a>
             <a href="list.html" class="tab-link ${isActive('list.html')}">
-                <span class="tab-icon">全ラインナップ
+                <span class="tab-icon">今夜のラインナップ
             </a>
         </nav>
     `;

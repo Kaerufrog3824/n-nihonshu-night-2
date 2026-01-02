@@ -20,7 +20,7 @@ function renderHeader() {
 function renderNav() {
     // 現在のファイル名を取得
     const path = window.location.pathname;
-    const page = path.split("/").pop() || "info.html"; // ファイル名がない場合はinfoとみなす
+    const page = path.split("/").pop() || "index.html"; // ファイル名がない場合はindexとみなす
 
     // アクティブクラスの判定用ヘルパー
     const isActive = (target) => (page === target) ? 'active' : '';
@@ -28,14 +28,14 @@ function renderNav() {
     // ナビゲーションのHTML
     const navHTML = `
         <nav class="tab-nav">
-            <a href="info.html" class="tab-link ${isActive('info.html')}">
-                <span class="tab-icon">イベント情報
-            </a>
             <a href="index.html" class="tab-link ${isActive('index.html')}">
                 <span class="tab-icon">おすすめ診断
             </a>
             <a href="list.html" class="tab-link ${isActive('list.html')}">
                 <span class="tab-icon">今夜のラインナップ
+            </a>
+            <a href="info.html" class="tab-link ${isActive('info.html')}">
+                <span class="tab-icon">イベント情報
             </a>
         </nav>
     `;

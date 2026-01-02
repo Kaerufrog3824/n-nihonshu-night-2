@@ -18,24 +18,24 @@ function renderHeader() {
 
 // ナビゲーションの描画
 function renderNav() {
-    // 現在のファイル名を取得（例: "index.html"）
+    // 現在のファイル名を取得
     const path = window.location.pathname;
-    const page = path.split("/").pop() || "index.html"; // ファイル名がない場合はindexとみなす
+    const page = path.split("/").pop() || "info.html"; // ファイル名がない場合はinfoとみなす
 
     // アクティブクラスの判定用ヘルパー
     const isActive = (target) => (page === target) ? 'active' : '';
 
-    // ナビゲーションのHTML（★ここで並び順を一括管理できます！）
+    // ナビゲーションのHTML
     const navHTML = `
         <nav class="tab-nav">
             <a href="info.html" class="tab-link ${isActive('info.html')}">
-                <span class="tab-icon">ℹ️</span>イベント情報
+                <span class="tab-icon">イベント情報
             </a>
             <a href="index.html" class="tab-link ${isActive('index.html')}">
-                <span class="tab-icon">🍶</span>おすすめ診断
+                <span class="tab-icon">おすすめ診断
             </a>
             <a href="list.html" class="tab-link ${isActive('list.html')}">
-                <span class="tab-icon">📜</span>全ラインナップ
+                <span class="tab-icon">全ラインナップ
             </a>
         </nav>
     `;

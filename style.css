@@ -1,0 +1,457 @@
+@charset "UTF-8";
+
+:root {
+    --nikkei-logo-bg: #0C2B5E;
+    --nikkei-accent: #C4A480;
+    --bg-color: #f4f4f7;
+    --text-color: #333;
+    --sake-liquid: #fadd75;
+    --slack-color: #4A154B;
+    --map-hover: #1a4f9c;
+}
+
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding-bottom: 60px;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ヘッダー */
+header {
+    background: var(--nikkei-logo-bg);
+    color: white;
+    padding: 15px 20px 10px;
+    text-align: center;
+}
+
+.header-logo {
+    max-width: 150px;
+    margin-bottom: 5px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.1em;
+    font-family: 'Noto Serif JP', serif;
+    letter-spacing: 0.05em;
+}
+
+/* タブナビゲーション */
+.tab-nav {
+    display: flex;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.tab-link {
+    flex: 1;
+    padding: 15px 0;
+    text-align: center;
+    font-weight: bold;
+    color: #888;
+    font-size: 0.95em;
+    border-bottom: 3px solid transparent;
+    transition: 0.3s;
+    display: block;
+}
+
+.tab-link:hover {
+    background: #fcfcfc;
+}
+
+.tab-link.active {
+    color: var(--nikkei-logo-bg);
+    border-bottom: 3px solid var(--nikkei-logo-bg);
+    background: #f9fbfd;
+}
+
+.tab-icon {
+    margin-right: 4px;
+}
+
+/* コンテンツコンテナ */
+.container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-desc {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #666;
+}
+
+/* --- コンポーネント: カード --- */
+.info-card,
+.question-card,
+.map-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+
+.info-card,
+.question-card {
+    border-top: 4px solid var(--nikkei-logo-bg);
+}
+
+.question-card {
+    padding: 20px 25px 35px;
+}
+
+/* ▼ 地図を真ん中に寄せる修正 */
+.map-section {
+    text-align: center;
+}
+
+/* --- コンポーネント: テーブル --- */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table th {
+    text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    color: var(--nikkei-logo-bg);
+    width: 30%;
+}
+
+.info-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.footer-note {
+    margin-top: 30px;
+    font-size: 0.85em;
+    color: #888;
+    text-align: center;
+}
+
+/* --- コンポーネント: お猪口UI --- */
+.question-card h3 {
+    margin-top: 0;
+    color: var(--nikkei-logo-bg);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.1em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #555;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 0 5px;
+}
+
+.rating-group {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 10px 0;
+    z-index: 10;
+}
+
+.rating-group input {
+    display: none;
+}
+
+.rating-group label {
+    width: 45px;
+    height: 42px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 2px 2px 20px 20px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s;
+    touch-action: manipulation;
+}
+
+.rating-group label span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    font-weight: bold;
+    color: #999;
+    font-size: 1.2em;
+    pointer-events: none;
+}
+
+.rating-group label::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: var(--sake-liquid);
+    opacity: 0.9;
+    transition: height 0.4s;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.rating-group label.active-fill::before {
+    height: 90%;
+}
+
+.rating-group label.active-fill {
+    border-color: #dcb368;
+}
+
+.rating-group label.active-fill span {
+    color: #0C2B5E;
+}
+
+/* --- コンポーネント: ボタン --- */
+.btn-primary {
+    width: 100%;
+    padding: 16px;
+    background: var(--nikkei-logo-bg);
+    color: white;
+    border: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(12, 43, 94, 0.3);
+    font-family: 'Noto Serif JP', serif;
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background: #1a4f9c;
+    transform: translateY(-2px);
+}
+
+.btn-slack {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--slack-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* --- コンポーネント: 酒カード --- */
+.sake-card {
+    background: white;
+    border-left: 6px solid var(--nikkei-logo-bg);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.sake-img-area {
+    width: 100%;
+    height: 200px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.sake-img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #f0f0f0;
+}
+
+.sake-card .sake-img-area .sake-img {
+    border: none;
+    margin: 0;
+}
+
+.sake-name {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--nikkei-logo-bg);
+    margin-bottom: 5px;
+    font-family: 'Noto Serif JP', serif;
+}
+
+.sake-info {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.pref-badge {
+    background: #eee;
+    color: #444;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-right: 8px;
+    font-size: 0.9em;
+}
+
+.match-score {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 0.9em;
+    background: #f0f4fa;
+    color: var(--nikkei-logo-bg);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* ▼ 診断結果エリア（最初は隠す！） */
+#result-area {
+    display: none;
+    /* ここが重要です */
+    margin-top: 30px;
+    animation: fadeIn 0.5s ease;
+}
+
+/* --- コンポーネント: 地図 --- */
+.japan-map-svg {
+    max-width: 100%;
+    height: auto;
+    max-height: 280px;
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.region-path {
+    fill: #e0e0e0;
+    stroke: #fff;
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: fill 0.3s, transform 0.2s;
+}
+
+.region-path:hover {
+    fill: var(--map-hover);
+    transform: translateY(-2px);
+}
+
+.region-path.active {
+    fill: #C4A480;
+    filter: brightness(1.1);
+}
+
+#current-filter {
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--nikkei-logo-bg);
+    height: 1.5em;
+}
+
+.reset-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 20px;
+    background: #eee;
+    color: #555;
+    border-radius: 20px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.reset-btn.hidden {
+    display: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.param-row {
+    display: flex;
+    align-items: center;
+    font-size: 0.85em;
+    margin-bottom: 6px;
+}
+
+.param-label {
+    width: 50px;
+    font-weight: bold;
+    color: #666;
+}
+
+.bar-bg {
+    flex-grow: 1;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.bar-fill {
+    height: 100%;
+    background: var(--nikkei-logo-bg);
+}
+
+.no-data-msg {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-weight: bold;
+    grid-column: 1 / -1;
+}
